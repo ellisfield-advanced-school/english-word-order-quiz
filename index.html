@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>語句整序（並び替え）クイズ</title>
+    <title>語句整序（並び替え）クイズ - エリスフィールド進学会</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -24,12 +24,24 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             box-sizing: border-box;
         }
+        
+        /* ヘッダー・タイトル部分のスタイリング */
+        .brand-header {
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #7f8c8d;
+            letter-spacing: 0.1em;
+            margin-bottom: 5px;
+        }
         h1 {
             font-size: 24px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-top: 0;
+            margin-bottom: 25px;
             color: #2c3e50;
         }
+        
         .mode-select, .quiz-screen, .result-screen {
             display: none;
         }
@@ -98,6 +110,7 @@
 
 <div class="container">
     <div id="mode-screen" class="mode-select active">
+        <div class="brand-header">エリスフィールド進学会</div>
         <h1>語句整序クイズ</h1>
         <button class="btn" onclick="startQuiz('現在完了形')">現在完了形</button>
         <button class="btn" onclick="startQuiz('現在進行形')">現在進行形</button>
@@ -105,6 +118,7 @@
     </div>
 
     <div id="quiz-screen" class="quiz-screen">
+        <div class="brand-header">エリスフィールド進学会</div>
         <div class="progress">問題: <span id="current-q-num">1</span> / <span id="total-q-num">10</span></div>
         <div id="japanese-question" class="japanese-text"></div>
         
@@ -122,6 +136,7 @@
     </div>
 
     <div id="result-screen" class="result-screen">
+        <div class="brand-header">エリスフィールド進学会</div>
         <h1>結果発表</h1>
         <p style="font-size: 20px; text-align: center;" id="score-text"></p>
         <button class="btn" onclick="toModeScreen()">タイトルに戻る</button>
@@ -163,16 +178,13 @@ function shuffle(array) {
 
 // クイズ開始
 function startQuiz(mode) {
-    // モード選別
     if (mode === 'ミックス') {
         currentQuestions = shuffle(quizData);
     } else {
         currentQuestions = shuffle(quizData.filter(q => q.category === mode));
     }
     
-    // 最大10問に制限
     currentQuestions = currentQuestions.slice(0, 10);
-    
     currentQuestionIndex = 0;
     score = 0;
     
@@ -192,7 +204,6 @@ function loadQuestion() {
     document.getElementById("submit-btn").disabled = false;
     
     selectedWords = [];
-    // 選択肢を完全にランダムシャッフル
     remainingWords = shuffle(q.correct);
     
     renderChips();
@@ -206,13 +217,11 @@ function renderChips() {
     answerArea.innerHTML = "";
     optionsArea.innerHTML = "";
     
-    // 解答エリアの描画
     selectedWords.forEach((word, index) => {
         const chip = document.createElement("div");
         chip.className = "word-chip";
         chip.textContent = word;
         
-        // 【自動大文字システム】先頭のチップかつ文字から始まる場合、大文字スタイルを適用
         if (index === 0 && isLetter(word)) {
             chip.classList.add("capitalize");
         }
@@ -225,7 +234,6 @@ function renderChips() {
         answerArea.appendChild(chip);
     });
     
-    // 選択肢エリアの描画
     remainingWords.forEach((word, index) => {
         const chip = document.createElement("div");
         chip.className = "word-chip";
@@ -239,12 +247,10 @@ function renderChips() {
     });
 }
 
-// アルファベットかどうか判定する補助関数
 function isLetter(str) {
     return str.length > 0 && str[0].match(/[a-z]/i);
 }
 
-// リセットボタン
 function resetCurrentQuestion() {
     const q = currentQuestions[currentQuestionIndex];
     selectedWords = [];
@@ -253,19 +259,16 @@ function resetCurrentQuestion() {
     renderChips();
 }
 
-// 判定
 function checkAnswer() {
     const q = currentQuestions[currentQuestionIndex];
     const feedback = document.getElementById("feedback");
     
-    // すべての単語が並べられているか
     if (remainingWords.length > 0) {
         feedback.className = "feedback incorrect";
         feedback.textContent = "すべての単語を並べ替えてください。";
         return;
     }
     
-    // 正誤チェック（小文字基準で比較）
     let isCorrect = true;
     for(let i = 0; i < q.correct.length; i++) {
         if(selectedWords[i].toLowerCase() !== q.correct[i].toLowerCase()) {
@@ -282,13 +285,11 @@ function checkAnswer() {
         score++;
     } else {
         feedback.className = "feedback incorrect";
-        // 表示用に先頭だけ大文字にした正解を生成
         const displayCorrect = [...q.correct];
         if(isLetter(displayCorrect[0])) displayCorrect[0] = displayCorrect[0].charAt(0).toUpperCase() + displayCorrect[0].slice(1);
         feedback.textContent = `不正解 × 【正解】${displayCorrect.join(" ").replace(/\s+(\.|\?)/g, "$1")}`;
     }
     
-    // 1.5秒後に次の問題へ
     setTimeout(() => {
         currentQuestionIndex++;
         if (currentQuestionIndex < currentQuestions.length) {
@@ -299,7 +300,6 @@ function checkAnswer() {
     }, 2000);
 }
 
-// 結果画面
 function showResult() {
     document.getElementById("quiz-screen").classList.remove("active");
     document.getElementById("result-screen").classList.add("active");
