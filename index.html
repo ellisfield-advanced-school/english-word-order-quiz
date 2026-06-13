@@ -25,7 +25,6 @@
             box-sizing: border-box;
         }
         
-        /* ヘッダー・タイトル部分のスタイリング */
         .brand-header {
             text-align: center;
             font-size: 14px;
@@ -69,7 +68,6 @@
         .progress { font-size: 14px; color: #7f8c8d; text-align: right; margin-bottom: 10px; }
         .japanese-text { font-size: 18px; font-weight: bold; margin-bottom: 20px; line-height: 1.5; }
         
-        /* エリア共通 */
         .word-area {
             min-height: 60px;
             border: 2px dashed #bdc3c7;
@@ -84,7 +82,6 @@
         }
         #options-area { border: 2px solid #3498db; background-color: #fff; }
 
-        /* 単語チップ */
         .word-chip {
             background-color: #ecf0f1;
             border: 1px solid #bdc3c7;
@@ -97,11 +94,11 @@
         }
         .word-chip:hover { background-color: #d5dbdb; transform: scale(1.05); }
         
-        /* 先頭大文字化のスタイル適用（JSで制御） */
+        /* 文頭大文字化のためのCSS（JSで1番目のチップにのみ付与） */
         .capitalize { text-transform: capitalize; }
 
         .controls { display: flex; gap: 10px; }
-        .feedback { font-size: 18px; font-weight: bold; text-align: center; margin-top: 15px; min-height: 27px; }
+        .feedback { font-size: 22px; font-weight: bold; text-align: center; margin-top: 15px; min-height: 33px; }
         .correct { color: #2ecc71; }
         .incorrect { color: #e74c3c; }
     </style>
@@ -144,19 +141,19 @@
 </div>
 
 <script>
-// 問題データ群
+// 問題データ群（固有名詞・人名を正しい大文字表記に修正）
 const quizData = [
     // 現在完了形
-    { category: "現在完了形", japanese: "あなたは今まで北海道に行ったことがありますか。", correct: ["have", "you", "ever", "been", "to", "hokkaido", "?"] },
+    { category: "現在完了形", japanese: "あなたは今まで北海道に行ったことがありますか。", correct: ["have", "you", "ever", "been", "to", "Hokkaido", "?"] },
     { category: "現在完了形", japanese: "私はまだ宿題を終えていません。", correct: ["i", "haven't", "finished", "my", "homework", "yet", "."] },
-    { category: "現在完了形", japanese: "トムは3年間ずっと日本に住んでいます。", correct: ["tom", "has", "lived", "in", "japan", "for", "three", "years", "."] },
+    { category: "現在完了形", japanese: "トムは3年間ずっと日本に住んでいます。", correct: ["Tom", "has", "lived", "in", "Japan", "for", "three", "years", "."] },
     { category: "現在完了形", japanese: "私は一度もその映画を見たことがありません。", correct: ["i", "have", "never", "seen", "that", "movie", "."] },
-    { category: "現在完了形", japanese: "ケンはもう出発してしまいましたか。", correct: ["has", "ken", "already", "left", "?"] },
+    { category: "現在完了形", japanese: "ケンはもう出発してしまいましたか。", correct: ["has", "Ken", "already", "left", "?"] },
     // 現在進行形
     { category: "現在進行形", japanese: "彼は今、公園で走っています。", correct: ["he", "is", "running", "in", "the", "park", "now", "."] },
     { category: "現在進行形", japanese: "あなたは今、何をしていますか。", correct: ["what", "are", "you", "doing", "now", "?"] },
-    { category: "現在進行形", japanese: "私たちは今、英語を勉強していません。", correct: ["we", "aren't", "studying", "english", "now", "."] },
-    { category: "現在進行形", japanese: "トムとケンはテニスをしています。 ", correct: ["tom", "and", "ken", "are", "playing", "tennis", "."] },
+    { category: "現在進行形", japanese: "私たちは今、英語を勉強していません。", correct: ["we", "aren't", "studying", "English", "now", "."] },
+    { category: "現在進行形", japanese: "トムとケンはテニスをしています。 ", correct: ["Tom", "and", "Ken", "are", "playing", "tennis", "."] },
     { category: "現在進行形", japanese: "彼女は今、音楽を聞いていますか。", correct: ["is", "she", "listening", "to", "music", "now", "?"] }
 ];
 
@@ -166,7 +163,6 @@ let score = 0;
 let selectedWords = [];
 let remainingWords = [];
 
-// 配列をシャッフルする関数（Fisher-Yates）
 function shuffle(array) {
     const clone = [...array];
     for (let i = clone.length - 1; i > 0; i--) {
@@ -176,7 +172,6 @@ function shuffle(array) {
     return clone;
 }
 
-// クイズ開始
 function startQuiz(mode) {
     if (mode === 'ミックス') {
         currentQuestions = shuffle(quizData);
@@ -195,7 +190,6 @@ function startQuiz(mode) {
     loadQuestion();
 }
 
-// 問題の読み込み
 function loadQuestion() {
     const q = currentQuestions[currentQuestionIndex];
     document.getElementById("current-q-num").textContent = currentQuestionIndex + 1;
@@ -209,7 +203,6 @@ function loadQuestion() {
     renderChips();
 }
 
-// チップ（単語）の描画
 function renderChips() {
     const answerArea = document.getElementById("answer-area");
     const optionsArea = document.getElementById("options-area");
@@ -222,7 +215,8 @@ function renderChips() {
         chip.className = "word-chip";
         chip.textContent = word;
         
-        if (index === 0 && isLetter(word)) {
+        // 1番目の単語、かつ、すでに大文字（Tomなど）で始まっていない場合のみ、CSSで自動大文字化
+        if (index === 0 && isLetter(word) && !isAlreadyCapitalized(word)) {
             chip.classList.add("capitalize");
         }
         
@@ -248,7 +242,12 @@ function renderChips() {
 }
 
 function isLetter(str) {
-    return str.length > 0 && str[0].match(/[a-z]/i);
+    return str.length > 0 && str[0].match(/[a-zA-Z]/);
+}
+
+// すでに大文字で始まっているか判定する関数
+function isAlreadyCapitalized(str) {
+    return str.length > 0 && str[0] === str[0].toUpperCase();
 }
 
 function resetCurrentQuestion() {
@@ -281,13 +280,16 @@ function checkAnswer() {
     
     if (isCorrect) {
         feedback.className = "feedback correct";
-        feedback.textContent = "正解！ 〇";
+        feedback.textContent = "正解 ⭕️";
         score++;
     } else {
         feedback.className = "feedback incorrect";
+        // 模範解答の作成（文頭のみ自動大文字化）
         const displayCorrect = [...q.correct];
-        if(isLetter(displayCorrect[0])) displayCorrect[0] = displayCorrect[0].charAt(0).toUpperCase() + displayCorrect[0].slice(1);
-        feedback.textContent = `不正解 × 【正解】${displayCorrect.join(" ").replace(/\s+(\.|\?)/g, "$1")}`;
+        if(isLetter(displayCorrect[0]) && !isAlreadyCapitalized(displayCorrect[0])) {
+            displayCorrect[0] = displayCorrect[0].charAt(0).toUpperCase() + displayCorrect[0].slice(1);
+        }
+        feedback.textContent = `不正解 ❌ 【正解】${displayCorrect.join(" ").replace(/\s+(\.|\?)/g, "$1")}`;
     }
     
     setTimeout(() => {
