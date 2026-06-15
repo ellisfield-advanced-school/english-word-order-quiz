@@ -358,16 +358,18 @@
         let reviewData = [];
         let currentMode = "";
 
-        // 固有名詞と特定単語のチェック用関数
-        function isProperNoun(word) {
-            const properNouns = [
-                "Tokyo", "Hokkaido", "Africa", "Tom", "Ken", "Yumi", 
-                "Mary", "Kaito", "Mr. Green", "Columbus", "Fukuoka", 
-                "Mt. Fuji", "I", "Japanese", "French", "Canada", "English"
-            ];
-            return properNouns.includes(word);
-        }
-
+       // 固有名詞と特定単語のチェック用関数（不具合修正版）
+function isProperNoun(word) {
+    // 1. 先頭が元々大文字の単語、または単独の "I" は一発で固有名詞と判定
+    if (word === "I" || (word.length > 0 && word[0] === word[0].toUpperCase() && /^[A-Z]/.test(word))) {
+        return true;
+    }
+    // 2. "Ken's birthday party" のように、塊の途中に大文字が含まれる場合も判定
+    if (/[A-Z]/.test(word)) {
+        return true;
+    }
+    return false;
+}
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
