@@ -306,7 +306,7 @@
             { category: "受け身 不規則動詞 1", japanese: "中国語がその女性によって話されました。", correct: ["Chinese", "was", "spoken", "by", "the woman", "."] },
             { category: "受け身 不規則動詞 1", japanese: "京都でたくさんの美しい写真が撮られました。", correct: ["Many beautiful pictures", "were", "taken", "in", "Kyoto", "."] },
             { category: "受け身 不規則動詞 1", japanese: "その面白い物語はメアリーによって書かれました。", correct: ["The interesting story", "was", "written", "by", "Mary", "."] },
-            { category: "受け身 不規則動詞 1", japanese: "この手紙は英語で書かれています。", correct: ["This letter", "is", "written", "in", "English", "."]
+            { category: "受け身 不規則動詞 1", japanese: "この手紙は英語で書かれています。", correct: ["This letter", "is", "written", "in", "English", "."] },
 
             // 受け身 不規則動詞 2
             { category: "受け身 不規則動詞 2", japanese: "その歴史は授業で教えられました。", correct: ["The history", "was", "taught", "in", "the class", "."] },
@@ -421,14 +421,7 @@
             poolWords.forEach((word, index) => {
                 const wordBtn = document.createElement('span');
                 wordBtn.className = 'word';
-                
-                // 選択肢の文頭大文字を自動で小文字にする（固有名詞と I を除く）
-                if (word !== "Tokyo" && word !== "Hokkaido" && word !== "Africa" && word !== "Tom" && word !== "Ken" && word !== "Yumi" && word !== "Mary" && word !== "Kaito" && word !== "Mr. Green" && word !== "Columbus" && word !== "Fukuoka" && word !== "Mt. Fuji" && word !== "I") {
-                    wordBtn.innerText = word.charAt(0).toLowerCase() + word.slice(1);
-                } else {
-                    wordBtn.innerText = word;
-                }
-
+                wordBtn.innerText = word;
                 wordBtn.onclick = () => pickWord(index);
                 wordZone.appendChild(wordBtn);
             });
@@ -481,7 +474,7 @@
             
             const comment = document.getElementById('result-comment');
             const percent = (score / currentQuestions.length) * 100;
-            if (percent === 100) comment.innerText = "素晴らしい！満点です！🎉";
+            if (percent === 100) comment.innerText = "素晴らしい！満点です！";
             else if (percent >= 80) comment.innerText = "お見事！あともう少しです！👍";
             else if (percent >= 50) comment.innerText = "ナイスファイト！復習してもう一度挑戦しよう！";
             else comment.innerText = "一歩ずつ進みましょう！次はもっと取れるはずです！";
