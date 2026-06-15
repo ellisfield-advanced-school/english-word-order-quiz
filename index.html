@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>語句整序（並び替え）テスト - エリスフィールド進学会</title>
+    <title>語句整序テスト - エリスフィールド進学会</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -12,534 +12,491 @@
             margin: 0;
             padding: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
         }
         .container {
-            max-width: 600px;
-            width: 100%;
-            background: white;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            box-sizing: border-box;
-        }
-        
-        .brand-header {
+            width: 100%;
+            max-width: 500px;
             text-align: center;
-            font-size: 14px;
-            font-weight: bold;
-            color: #7f8c8d;
-            letter-spacing: 0.1em;
-            margin-bottom: 5px;
+            box-sizing: border-box;
+            margin-top: 20px;
         }
         h1 {
             font-size: 24px;
-            text-align: center;
-            margin-top: 0;
-            margin-bottom: 25px;
+            margin-bottom: 5px;
             color: #2c3e50;
         }
-        
-        .mode-select, .quiz-screen, .result-screen {
-            display: none;
+        .subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 25px;
         }
-        .active {
-            display: block;
+        .mode-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #34495e;
         }
         .btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            border-radius: 6px;
-            cursor: pointer;
+            display: block;
             width: 100%;
-            margin-bottom: 10px;
-            transition: background 0.2s;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #3498db;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-sizing: border-box;
         }
-        .btn:hover { background-color: #2980b9; }
-        .btn-secondary { background-color: #e67e22; }
-        .btn-secondary:hover { background-color: #d35400; }
-        .btn-reset { background-color: #95a5a6; }
-        .btn-reset:hover { background-color: #7f8c8d; }
-        
-        .progress { font-size: 14px; color: #7f8c8d; text-align: right; margin-bottom: 10px; }
-        .japanese-text { font-size: 18px; font-weight: bold; margin-bottom: 20px; line-height: 1.5; }
-        
-        .word-area {
-            min-height: 60px;
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn-secondary {
+            background-color: #e67e22;
+        }
+        .question-box {
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.5;
+            margin: 20px 0;
+            text-align: left;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-left: 5px solid #3498db;
+            border-radius: 4px;
+        }
+        .answer-area {
             border: 2px dashed #bdc3c7;
             border-radius: 8px;
+            min-height: 80px;
+            margin: 15px 0;
             padding: 10px;
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            align-content: center;
-            margin-bottom: 20px;
-            background-color: #fafafa;
+            gap: 8px;
+            align-content: flex-start;
+            background-color: #fff;
         }
-        #options-area { border: 2px solid #3498db; background-color: #fff; }
-
-        .word-chip {
+        .word-pool {
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            min-height: 80px;
+            margin: 15px 0;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-content: flex-start;
+            background-color: #fff;
+        }
+        .word {
             background-color: #ecf0f1;
             border: 1px solid #bdc3c7;
-            padding: 8px 16px;
             border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 16px;
             cursor: pointer;
             user-select: none;
-            font-size: 16px;
-            transition: transform 0.1s, background-color 0.2s;
+            transition: background-color 0.2s;
         }
-        .word-chip:hover { background-color: #d5dbdb; transform: scale(1.05); }
-        
-        /* 文頭大文字化のためのCSS（JSで1番目のチップにのみ付与） */
-        .capitalize { text-transform: capitalize; }
-
-        .controls { display: flex; gap: 10px; }
-        .feedback { font-size: 22px; font-weight: bold; text-align: center; margin-top: 15px; min-height: 33px; }
-        .correct { color: #2ecc71; }
-        .incorrect { color: #e74c3c; }
+        .word:active {
+            background-color: #d6dbdf;
+        }
+        .control-btns {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .btn-control {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #fff;
+        }
+        .btn-reset {
+            background-color: #95a5a6;
+        }
+        .btn-submit {
+            background-color: #2ecc71;
+        }
+        .status-area {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+        .section-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: left;
+            margin-bottom: 2px;
+            font-weight: bold;
+        }
+        #result-screen {
+            display: none;
+        }
+        .score-text {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2ecc71;
+            margin: 20px 0;
+        }
+        .review-item {
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+            padding: 10px 0;
+        }
+        .review-q { font-weight: bold; color: #2c3e50; }
+        .review-a { color: #2ecc71; font-family: monospace; font-size: 15px; margin-top: 4px; }
+        .review-w { color: #e74c3c; font-family: monospace; font-size: 15px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="mode-screen" class="mode-select active">
-        <div class="brand-header">エリスフィールド進学会</div>
+    <div class="container" id="menu-screen">
+        <div class="subtitle">エリスフィールド進学会</div>
         <h1>語句整序テスト</h1>
+        <div style="height: 20px;"></div>
+        
         <button class="btn" onclick="startQuiz('現在完了形')">現在完了形</button>
         <button class="btn" onclick="startQuiz('現在進行形')">現在進行形</button>
-        // =================================================================
-// 【エリスフィールド進学会 専用】受け身 5単元一括追加ブロック
-// =================================================================
-    `</div>
-    <script>
-    // 💡仕組みの調整：ボタンエリアの直後にデータを滑り込ませるため、一度HTMLを閉じてからデータを定義します
-
-    const extraArray = [
-        // 受け身 規則動詞 1
-        { category: "受け身 規則動詞 1", japanese: "この計画は昨日決定されました。", correct: ["This plan", "was", "decided", "yesterday", "."] },
-        { category: "受け身 規則動詞 1", japanese: "そのシャツは昨日洗われました。", correct: ["The shirt", "was", "washed", "yesterday", "."] },
-        { category: "受け身 規則動詞 1", japanese: "そのデータは何回もチェックされました。", correct: ["The data", "was", "checked", "many times", "."] },
-        { category: "受け身 規則動詞 1", japanese: "これらの物語はずっと前に作り出されました。", correct: ["These stories", "were", "created", "a long time ago", "."] },
-        { category: "受け身 規則動詞 1", japanese: "その公園は毎朝、掃除されています。", correct: ["The park", "is", "cleaned", "every morning", "."] },
-        { category: "受け身 規則動詞 1", japanese: "そのかわいい猫は、みんなに愛されています。", correct: ["The cute cat", "is", "loved", "by", "everyone", "."] },
-        { category: "受け身 規則動詞 1", japanese: "その試合は雨によって止められました。（中断しました）", correct: ["The game", "was", "stopped", "by", "the rain", "."] },
-        { category: "受け身 規則動詞 1", japanese: "そのアーチストは多くのファンに歓迎されました。", correct: ["The artist", "was", "welcomed", "by", "many fans", "."] },
-        { category: "受け身 規則動詞 1", japanese: "あの古いお寺は多くの観光客に訪問されています。", correct: ["That old temple", "is", "visited", "by", "many tourists", "."] },
-        { category: "受け身 規則動詞 1", japanese: "このコンピューターは何人かの生徒によって使われています。", correct: ["This computer", "is", "used", "by", "some students", "."] },
-        { category: "受け身 規則動詞 1", japanese: "このおいしいスープは私の父によって料理されました。", correct: ["This delicious soup", "was", "cooked", "by", "my father", "."] },
-        { category: "受け身 規則動詞 1", japanese: "日本の歴史は、多くの学生によって学ばれています。", correct: ["Japanese history", "is", "studied", "by", "many students", "."] },
-        { category: "受け身 規則動詞 1", japanese: "私たちの教室は毎日、私たちによって掃除されます。", correct: ["Our classroom", "is", "cleaned", "by us", "every day", "."] },
-        { category: "受け身 規則動詞 1", japanese: "そのゲートは5時に閉められました。", correct: ["The gate", "was", "closed", "at", "five o'clock", "."] },
-
-        // 受け身 規則動詞 2
-        { category: "受け身 規則動詞 2", japanese: "この場所は世界遺産に選ばれています。", correct: ["This place", "is", "selected", "as", "a World Heritage site", "."] },
-        { category: "受け身 規則動詞 2", japanese: "何人かのボランティアがお祭りのために必要とされています。", correct: ["Some volunteers", "are", "needed", "for", "the festival", "."] },
-        { category: "受け身 規則動詞 2", japanese: "多くの種類のパンがこの店で焼かれています。", correct: ["Many kinds of", "bread", "are", "baked", "at", "this store", "."] },
-        { category: "受け身 規則動詞 2", japanese: "この美しい花は、英語でサンフラワーと呼ばれています。", correct: ["This beautiful flower", "is", "called", "sunflower", "in English", "."] },
-        { category: "受け身 規則動詞 2", japanese: "あなたは学校で何と呼ばれていますか?", correct: ["What", "are", "you", "called", "at school", "?"] },
-        { category: "受け身 規則動詞 2", japanese: "彼は学校で何と呼ばれていますか?", correct: ["What", "is", "he", "called", "at school", "?"] },
-        { category: "受け身 規則動詞 2", japanese: "私はケンの誕生日パーティーに招待されました。", correct: ["I", "was", "invited", "to", "Ken's birthday party", "."] },
-        { category: "受け身 規則動詞 2", japanese: "その有名な絵は、若い芸術家によって描かれました。", correct: ["The famous picture", "was", "painted", "by", "a young artist", "."] },
-        { category: "受け身 規則動詞 2", japanese: "京都は世界中からやってくる多くの人々に訪れられています。", correct: ["Kyoto", "is", "visited", "by", "many people", "from", "all over the world", "."] },
-        { category: "受け身 規則動詞 2", japanese: "その小さな犬は川から救助されました。", correct: ["The little dog", "was", "saved", "from", "the river", "."] },
-        { category: "受け身 規則動詞 2", japanese: "重い箱が部屋の中に運び込まれました。", correct: ["Heavy boxes", "were", "carried", "into", "the room", "."] },
-        { category: "受け身 規則動詞 2", japanese: "その人気の音楽は、有名なピアニストによって演奏されました。", correct: ["The popular music", "was", "played", "by", "a famous pianist", "."] },
-        { category: "受け身 規則動詞 2", japanese: "アメリカは1492年にコロンブスによって発見されました。", correct: ["America", "was", "discovered", "by Columbus", "in 1492", "."] },
-        { category: "受け身 規則動詞 2", japanese: "これらのお皿は夕食の後に洗われますか。", correct: ["Are", "these dishes", "washed", "after dinner", "?"] },
-        { category: "受け身 規則動詞 2", japanese: "そのサッカーの試合は、何百万人もの人々によって観られました。", correct: ["The soccer game", "was", "watched", "by", "millions of", "people", "."] },
-
-        // 受け身 不規則動詞 1
-        { category: "受け身 不規則動詞 1", japanese: "このケーキは母によって切られました。", correct: ["This cake", "was", "cut", "by", "my mother", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "その新しい動物はアフリカで見つけられました。", correct: ["The new animal", "was", "found", "in Africa", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "英語はグリーン先生によって教えられています。", correct: ["English", "is", "taught", "by", "Mr. Green", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "この家は10年前に建てられました。", correct: ["This house", "was", "built", "ten years ago", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "東京には多くの高い建物が建てられました。", correct: ["Many tall buildings", "were", "built", "in Tokyo", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "そのボールは、カイトによって捕球されました。", correct: ["The ball", "was", "caught", "by", "Kaito", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "昨日、一匹の大きな魚が彼によって捕まえられました。", correct: ["A big fish", "was", "caught", "by him", "yesterday", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "この本は多くの子供たちに読まれています。", correct: ["This book", "is", "read", "by", "many children", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "この漫画本は多くの10代の若者に読まれています。", correct: ["This comic book", "is", "read", "by", "many teenagers", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "あの店ではホットコーヒーが売られています。", correct: ["Hot coffee", "is", "sold", "at", "that store", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "たくさんの美しい花がそのお店で売られています。", correct: ["Many beautiful flowers", "are", "sold", "at", "the shop", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "一個の荷物が2日前に送られました。（発送されました）", correct: ["A package", "was", "sent", "two days ago", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "一通の英語のEメールが私に送られてきました。", correct: ["An English email", "was", "sent", "to me", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "現在、私の腕時計は壊れています。", correct: ["My watch", "is", "broken", "now", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "このコンピューターはいつ壊れたのですか。", correct: ["When", "was", "this computer", "broken", "?"] },
-        { category: "受け身 不規則動詞 1", japanese: "お米は多くの人々に食べられています。", correct: ["Rice", "is", "eaten", "by", "many people", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "その魚はトムの家族によって食べられました。", correct: ["The fish", "was", "eaten", "by", "Tom’s family", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "そのクッキーは私の兄弟に食べられてしまいました。", correct: ["The cookies", "were", "eaten", "by", "my brother", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "この腕時計は祖父から与えられました。（もらいました）", correct: ["This watch", "was", "given", "by", "my grandfather", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "彼は昨日、図書館で見かけられました。", correct: ["He", "was", "seen", "at", "the library", "yesterday", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "この歌は多くの人々に歌われています。", correct: ["This song", "is", "sung", "by", "many people", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "その歌はコンサートで歌われました。", correct: ["The song", "was", "sung", "at", "the concert", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "英語は多くの国々で話されています。", correct: ["English", "is", "spoken", "in", "many countries", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "中国語がその女性によって話されました。", correct: ["Chinese", "was", "spoken", "by", "the woman", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "京都でたくさんの美しい写真が撮られました。", correct: ["Many beautiful pictures", "were", "taken", "in", "Kyoto", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "その面白い物語はメアリーによって書かれました。", correct: ["The interesting story", "was", "written", "by", "Mary", "."] },
-        { category: "受け身 不規則動詞 1", japanese: "この手紙は英語で書かれています。", correct: ["This letter", "is", "written", "in", "English", "."] },
-
-        // 受け身 不規則動詞 2
-        { category: "受け身 不規則動詞 2", japanese: "その歴史は授業で教えられました。", correct: ["The history", "was", "taught", "in", "the class", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "このお寺は100年前に建てられたのですか。", correct: ["Was", "this temple", "built", "100 years ago", "?"] },
-        { category: "受け身 不規則動詞 2", japanese: "この机は木で作られています。（木製です）", correct: ["This desk", "is", "made of", "wood", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "このジャケットは羊毛（ウール）で作られています。", correct: ["This jacket", "is", "made of", "wool", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "チーズは牛乳から作られます。", correct: ["Cheese", "is", "made from", "milk", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "ワインはブドウから作られます。", correct: ["Wine", "is", "made from", "grapes", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "その悲しい物語は私たちの授業で読まれました。", correct: ["The sad story", "was", "read", "in", "our class", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "それらのチケットは5分で売り切れました。", correct: ["Those tickets", "were", "sold out", "in", "five minutes", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "何本かの傘が雨の日に売れました。", correct: ["Some umbrellas", "were", "sold", "on rainy days", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "毎年、クリスマスカードが多くの友達に送られます。", correct: ["Christmas cards", "are", "sent to", "many friends", "every year", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "昨夜、窓が風によって割られました。（割れました）", correct: ["The window", "was", "broken", "by", "the wind", "last night", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "たくさんのリンゴが、一匹の野生の熊に食べられてしまいました。", correct: ["Many apples", "were", "eaten", "by", "a wild bear", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "昨日、私たちはたくさんの宿題を与えられました。", correct: ["We", "were", "given", "much homework", "yesterday", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "いくつかのアドバイスが生徒たちに与えられました。", correct: ["Some advice", "was", "given", "to", "the students", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "美しい山が窓から見えました。", correct: ["The beautiful mountain", "was", "seen", "from", "the window", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "富士山は世界中の人々に知られています。", correct: ["Mt. Fuji", "is", "known to", "people", "around the world", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "彼は有名な歌手として知られています。", correct: ["He", "is", "known as", "a famous singer", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "福岡その有名な神社で知られています。", correct: ["Fukuoka", "is", "known for", "the famous shrine", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "ハッピーバースデーは世界中で歌われています。", correct: ["Happy Birthday", "is", "sung", "around the world", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "式典で校歌が歌われました。", correct: ["The school song", "was", "sung", "at", "the ceremony", "."] },
-        { category: "受け身 不規則動詞 2", japanese: "この国ではフランス語は話されていません。", correct: ["French", "is", "not", "spoken", "in", "this country", "."] },
-        { category: "受け do: "受け身 不規則動詞 2", japanese: "フランス語はカナダで話されていますか。", correct: ["Is", "French", "spoken", "in", "Canada", "?"] },
-
-        // 受け身 不規則動詞 3
-        { category: "受け身 不規則動詞 3", japanese: "その長い木は明日、切られる予定です。", correct: ["The tall tree", "will be", "cut", "tomorrow", "."] },
-        { category: "受け身 不規則動詞 3", japanese: "その部屋はきれいに保たれなければなりません。", correct: ["The room", "must be", "kept", "clean", "."] },
-        { category: "受け身 不規則動詞 3", japanese: "牛乳は冷蔵庫の中に保存されなければいけません。", correct: ["Milk", "must be", "kept", "in", "the refrigerator", "."] },
-        { category: "受け身 不規則動詞 3", japanese: "来年、新しい図書館が建てられる予定です。", correct: ["A new library", "will be", "built", "next year", "."] },
-        { category: "受け身 不規則動詞 3", japanese: "このメッセージは全員に送信される予定です。", correct: ["This message", "will be", "sent to", "everyone", "."] },
-        { category: "受け身 不規則動詞 3", japanese: "そのルールは破られてはいけません。", correct: ["The rules", "must not be", "broken", "."] },
-        { category: "受け身 不規則動詞 3", japanese: "今夜は多くの星が見られます。", correct: ["Many stars", "can be", "seen", "tonight", "."] },
-        { category: "受け身 不規則動詞 3", japanese: "この公園では野生のシカが見られます。", correct: ["Wild deer", "can be", "seen", "in", "this park", "."] },
-        { category: "受け身 不規則動詞 3", japanese: "このレポートは次の金曜日までに書かれなければいけません。", correct: ["This report", "must be", "written", "by", "next Friday", "."] }
-    ];
-    setTimeout(() => { if(typeof quizData !== 'undefined') quizData.push(...extraArray); }, 10);
-    </script>
-    <div style="display:none">
+        <button class="btn" onclick="startQuiz('受け身 規則動詞 1')">受け身 規則動詞 1</button>
+        <button class="btn" onclick="startQuiz('受け身 規則動詞 2')">受け身 規則動詞 2</button>
+        <button class="btn" onclick="startQuiz('受け身 不規則動詞 1')">受け身 不規則動詞 1</button>
+        <button class="btn" onclick="startQuiz('受け身 不規則動詞 2')">受け身 不規則動詞 2</button>
+        <button class="btn" onclick="startQuiz('受け身 不規則動詞 3')">受け身 不規則動詞 3</button>
+        
         <button class="btn btn-secondary" onclick="startQuiz('ミックス')">単元ミックスモード</button>
     </div>
 
-    <div id="quiz-screen" class="quiz-screen">
-        <div class="brand-header">エリスフィールド進学会</div>
-        <div class="progress">問題: <span id="current-q-num">1</span> / <span id="total-q-num">10</span></div>
-        <div id="japanese-question" class="japanese-text"></div>
+    <div class="container" id="quiz-screen" style="display: none;">
+        <div class="subtitle">エリスフィールド進学会</div>
+        <div id="current-mode-title" class="mode-title"></div>
+        <div class="status-area" id="status-text">問題: 1 / 10</div>
         
-        <p style="margin:0 0 5px 0; font-size:12px; color:#7f8c8d;">【解答エリア】</p>
-        <div id="answer-area" class="word-area"></div>
+        <div class="question-box" id="japanese-text">日本語の文章がここに表示されます。</div>
         
-        <p style="margin:0 0 5px 0; font-size:12px; color:#7f8c8d;">【選択肢】（タップして移動）</p>
-        <div id="options-area" class="word-area"></div>
+        <div class="section-label">【解答エリア】</div>
+        <div class="answer-area" id="answer-zone"></div>
         
-        <div class="controls">
-            <button class="btn btn-reset" onclick="resetCurrentQuestion()">リセット</button>
-            <button class="btn" id="submit-btn" onclick="checkAnswer()">決定</button>
+        <div class="section-label">【選択肢】（タップして移動）</div>
+        <div class="word-pool" id="word-zone"></div>
+        
+        <div class="control-btns">
+            <button class="btn-control btn-reset" onclick="resetCurrentQuestion()">リセット</button>
+            <button class="btn-control btn-submit" onclick="submitAnswer()">決定</button>
         </div>
-        <div id="feedback" class="feedback"></div>
     </div>
 
-    <div id="result-screen" class="result-screen">
-        <div class="brand-header">エリスフィールド進学会</div>
-        <h1>結果発表</h1>
-        <p style="font-size: 20px; text-align: center;" id="score-text"></p>
-        <button class="btn" onclick="toModeScreen()">タイトルに戻る</button>
+    <div class="container" id="result-screen">
+        <div class="subtitle">エリスフィールド進学会</div>
+        <h1>テスト結果</h1>
+        <div class="score-text" id="score-display">0 / 0</div>
+        <div id="result-comment" style="margin-bottom: 25px; font-weight: bold;"></div>
+        
+        <div id="review-zone" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #e1e8ed; padding: 10px; border-radius: 8px; background: #fafbfc;"></div>
+        
+        <button class="btn" onclick="backToMenu()">メニューに戻る</button>
     </div>
-</div>
 
-<script>
-// 問題データ群（固有名詞・人名を正しい大文字表記に修正）
-const quizData = [
-    // 現在完了形
-    { category: "現在完了形", japanese: "あなたは今まで北海道に行ったことがありますか。", correct: ["have", "you", "ever", "been", "to", "Hokkaido", "?"] },
-    { category: "現在完了形", japanese: "私はまだ宿題を終えていません。", correct: ["i", "haven't", "finished", "my", "homework", "yet", "."] },
-    { category: "現在完了形", japanese: "トムは3年間ずっと日本に住んでいます。", correct: ["Tom", "has", "lived", "in", "Japan", "for", "three", "years", "."] },
-    { category: "現在完了形", japanese: "私は一度もその映画を見たことがありません。", correct: ["i", "have", "never", "seen", "that", "movie", "."] },
-    { category: "現在完了形", japanese: "ケンはもう出発してしまいましたか。", correct: ["has", "Ken", "already", "left", "?"] },
-    // 追加の現在完了形問題
-    { category: "現在完了形", japanese: "ケンは去年から東京に住んでいます。", correct: ["Ken", "has", "lived", "in", "Tokyo", "since", "last", "year", "."] },
-    { category: "現在完了形", japanese: "私は東京に2回行ったことがある。", correct: ["i", "have", "been", "to", "Tokyo", "twice", "."] },
-    { category: "現在完了形", japanese: "ユミはちょうど駅に着いたところだ。", correct: ["Yumi", "has", "just", "got", "to", "the", "station", "."] },
-    { category: "現在完了形", japanese: "トムはまだ昼食を食べていない。", correct: ["Tom", "has", "not", "eaten", "lunch", "yet", "."] },
-    { category: "現在完了形", japanese: "あなたは今までピアノを弾いたことがありますか。", correct: ["have", "you", "ever", "played", "the", "piano", "?"] },
-    { category: "現在完了形", japanese: "私たちは2時間、テレビを見続けています。", correct: ["we", "have", "been", "watching", "TV", "for", "two", "hours", "."] },
-    { category: "現在完了形", japanese: "あなたは以前、その有名なサッカー選手に会ったことがありますか。", correct: ["have", "you", "met", "the", "famous", "soccer", "player", "before", "?"] },
-    { category: "現在完了形", japanese: "トムはちょうどそのレポートを書き終わったところです。", correct: ["Tom", "has", "just", "finished", "writing", "the", "report", "."] },
-    { category: "現在完了形", japanese: "彼らは3日間ずっと忙しい。", correct: ["they", "have", "been", "busy", "for", "three", "days", "."] },
-    { category: "現在完了形", japanese: "あなたはいつからここに住んでいるのですか。", correct: ["how", "long", "have", "you", "lived", "here", "?"] },
-    { category: "現在完了形", japanese: "私はコアラを一度も見たことがありません。", correct: ["i", "have", "never", "seen", "a", "koala", "."] },
-    { category: "現在完了形", japanese: "ケンはすでに昼食を食べてしまった。", correct: ["Ken", "has", "already", "eaten", "lunch", "."] },
-    { category: "現在完了形", japanese: "ユミは生まれてからずっとここに住んでいます。", correct: ["Yumi", "has", "lived", "here", "since", "she", "was", "born", "."] },
-    { category: "現在完了形", japanese: "あなたはもうその本を読み終えましたか。", correct: ["have", "you", "finished", "reading", "the", "book", "yet", "?"] },
-    { category: "現在完了形", japanese: "私は3回、このコンピュータを使ったことがあります。", correct: ["i", "have", "used", "this", "computer", "three", "times", "."] },
-    { category: "現在完了形", japanese: "あなたはこの本を読んだことがありますか。", correct: ["have", "you", "ever", "read", "this", "book", "?"] },
-    { category: "現在完了形", japanese: "わたしはちょうど宿題を終えたところです。", correct: ["i", "have", "just", "finished", "my", "homework", "."] },
-    { category: "現在完了形", japanese: "メアリーは以前、横浜で昼食を食べたことがあります。", correct: ["Mary", "has", "had", "lunch", "in", "Yokohama", "before", "."] },
-    { category: "現在完了形", japanese: "私は3回、歌舞伎を見たことがあります。", correct: ["i", "have", "seen", "kabuki", "three", "times", "."] },
-    { category: "現在完了形", japanese: "あなたは今までカナダに行ったことがありますか。", correct: ["have", "you", "ever", "been", "to", "Canada", "?"] },
-// ==========================================
-    // 追加の受け身問題（5つに細分化）
-    // ==========================================
-    // 受け身 規則動詞 1
-    { category: "受け身 規則動詞 1", japanese: "この計画は昨日決定されました。", correct: ["This plan", "was", "decided", "yesterday", "."] },
-    { category: "受け身 規則動詞 1", japanese: "そのシャツは昨日洗われました。", correct: ["The shirt", "was", "washed", "yesterday", "."] },
-    { category: "受け身 規則動詞 1", japanese: "そのデータは何回もチェックされました。", correct: ["The data", "was", "checked", "many times", "."] },
-    { category: "受け身 規則動詞 1", japanese: "これらの物語はずっと前に作り出されました。", correct: ["These stories", "were", "created", "a long time ago", "."] },
-    { category: "受け身 規則動詞 1", japanese: "その公園は毎朝、掃除されています。", correct: ["The park", "is", "cleaned", "every morning", "."] },
-    { category: "受け身 規則動詞 1", japanese: "そのかわいい猫は、みんなに愛されています。", correct: ["The cute cat", "is", "loved", "by", "everyone", "."] },
-    { category: "受け身 規則動詞 1", japanese: "その試合は雨によって止められました。（中断しました）", correct: ["The game", "was", "stopped", "by", "the rain", "."] },
-    { category: "受け身 規則動詞 1", japanese: "そのアーチストは多くのファンに歓迎されました。", correct: ["The artist", "was", "welcomed", "by", "many fans", "."] },
-    { category: "受け身 規則動詞 1", japanese: "あの古いお寺は多くの観光客に訪問されています。", correct: ["That old temple", "is", "visited", "by", "many tourists", "."] },
-    { category: "受け身 規則動詞 1", japanese: "このコンピューターは何人かの生徒によって使われています。", correct: ["This computer", "is", "used", "by", "some students", "."] },
-    { category: "受け身 規則動詞 1", japanese: "このおいしいスープは私の父によって料理されました。", correct: ["This delicious soup", "was", "cooked", "by", "my father", "."] },
-    { category: "受け身 規則動詞 1", japanese: "日本の歴史は、多くの学生によって学ばれています。", correct: ["Japanese history", "is", "studied", "by", "many students", "."] },
-    { category: "受け身 規則動詞 1", japanese: "私たちの教室は毎日、私たちによって掃除されます。", correct: ["Our classroom", "is", "cleaned", "by us", "every day", "."] },
-    { category: "受け身 規則動詞 1", japanese: "そのゲートは5時に閉められました。", correct: ["The gate", "was", "closed", "at", "five o'clock", "."] },
+    <script>
+        const quizData = [
+            // 現在完了形
+            { category: "現在完了形", japanese: "あなたは今までに北海道に行ったことがありますか。", correct: ["Have", "you", "ever", "been", "to", "Hokkaido", "?"] },
+            { category: "現在完了形", japanese: "私は一度もトムに会ったことがありません。", correct: ["I", "have", "never", "met", "Tom", "."] },
+            { category: "現在完了形", japanese: "ケンはこれまでに3回、その映画を見たことがあります。", correct: ["Ken", "has", "seen", "the movie", "three times", "."] },
+            { category: "現在完了形", japanese: "ケンはもう出発してしまいましたか。", correct: ["Has", "Ken", "already", "left", "?"] },
+            { category: "現在完了形", japanese: "ケンは去年から東京に住んでいます。", correct: ["Ken", "has", "lived", "in Tokyo", "since last year", "."] },
+            { category: "現在完了形", japanese: "私は東京に2回行ったことがある。", correct: ["I", "have", "been", "to Tokyo", "twice", "."] },
+            { category: "現在完了形", japanese: "ユミはちょうど駅に着いたところだ。", correct: ["Yumi", "has", "just", "arrived", "at the station", "."] },
+            { category: "現在完了形", japanese: "トムはまだ昼食を食べていない。", correct: ["Tom", "has", "not", "eaten", "lunch", "yet", "."] },
+            { category: "現在完了形", japanese: "あなたは今までにピアノを弾いたことがありますか。", correct: ["Have", "you", "ever", "played", "the piano", "?"] },
+            { category: "現在完了形", japanese: "私たちは2時間、テレビを見続けています。", correct: ["We", "have", "been", "watching", "TV", "for", "two hours", "."] },
+            { category: "現在完了形", japanese: "あなたは以前、その有名なサッカー選手に会ったことがありますか。", correct: ["Have", "you", "met", "the famous", "soccer player", "before", "?"] },
+            { category: "現在完了形", japanese: "トムはちょうどそのレポートを書き終わったところです。", correct: ["Tom", "has", "just", "finished", "writing", "the report", "."] },
+            { category: "現在完了形", japanese: "彼らは3日間ずっと忙しい。", correct: ["They", "have", "been", "busy", "for", "three days", "."] },
+            { category: "現在完了形", japanese: "あなたはいつからここに住んでいるのですか。", correct: ["Since when", "have", "you", "lived", "here", "?"] },
+            { category: "現在完了形", japanese: "私はコアラを一度も見たことがありません。", correct: ["I", "have", "never", "seen", "a koala", "."] },
+            { category: "現在完了形", japanese: "ケンはすでに昼食を食べてしまった。", correct: ["Ken", "has", "already", "eaten", "lunch", "."] },
+            { category: "現在完了形", japanese: "ユミは生まれてからずっとここに住んでいます。", correct: ["Yumi", "has", "lived", "here", "all her life", "."] },
+            { category: "現在完了形", japanese: "あなたはもうその本を読み終えましたか。", correct: ["Have", "you", "finished", "reading", "the book", "yet", "?"] },
+            { category: "現在完了形", japanese: "私は3回、このコンピュータを使ったことがあります。", correct: ["I", "have", "used", "this computer", "three times", "."] },
+            { category: "現在完了形", japanese: "あなたはこの本を読んだことがありますか。", correct: ["Have", "you", "read", "this book", "before", "?"] },
+            { category: "現在完了形", japanese: "わたしはちょうど宿題を終えたところです。", correct: ["I", "has", "just", "finished", "my homework", "."] },
+            { category: "現在完了形", japanese: "メアリーは以前、横浜で昼食を食べたことがあります。", correct: ["Mary", "has", "eaten", "lunch", "in Yokohama", "before", "."] },
+            { category: "現在完了形", japanese: "私は3回、歌舞伎を見たことがあります。", correct: ["I", "have", "seen", "Kabuki", "three times", "."] },
+            { category: "現在完了形", japanese: "あなたは今までカナダに行ったことがありますか。", correct: ["Have", "you", "ever", "been", "to Canada", "?"] },
 
-    // 受け身 規則動詞 2
-    { category: "受け身 規則動詞 2", japanese: "この場所は世界遺産に選ばれています。", correct: ["This place", "is", "selected", "as", "a World Heritage site", "."] },
-    { category: "受け身 規則動詞 2", japanese: "何人かのボランティアがお祭りのために必要とされています。", correct: ["Some volunteers", "are", "needed", "for", "the festival", "."] },
-    { category: "受け身 規則動詞 2", japanese: "多くの種類のパンがこの店で焼かれています。", correct: ["Many kinds of", "bread", "are", "baked", "at", "this store", "."] },
-    { category: "受け身 規則動詞 2", japanese: "この美しい花は、英語でサンフラワーと呼ばれています。", correct: ["This beautiful flower", "is", "called", "sunflower", "in English", "."] },
-    { category: "受け身 規則動詞 2", japanese: "あなたは学校で何と呼ばれていますか?", correct: ["What", "are", "you", "called", "at school", "?"] },
-    { category: "受け身 規則動詞 2", japanese: "彼は学校で何と呼ばれていますか?", correct: ["What", "is", "he", "called", "at school", "?"] },
-    { category: "受け身 規則動詞 2", japanese: "私はケンの誕生日パーティーに招待されました。", correct: ["I", "was", "invited", "to", "Ken's birthday party", "."] },
-    { category: "受け身 規則動詞 2", japanese: "その有名な絵は、若い芸術家によって描かれました。", correct: ["The famous picture", "was", "painted", "by", "a young artist", "."] },
-    { category: "受け身 規則動詞 2", japanese: "京都は世界中からやってくる多くの人々に訪れられています。", correct: ["Kyoto", "is", "visited", "by", "many people", "from", "all over the world", "."] },
-    { category: "受け身 規則動詞 2", japanese: "その小さな犬は川から救助されました。", correct: ["The little dog", "was", "saved", "from", "the river", "."] },
-    { category: "受け身 規則動詞 2", japanese: "重い箱が部屋の中に運び込まれました。", correct: ["Heavy boxes", "were", "carried", "into", "the room", "."] },
-    { category: "受け身 規則動詞 2", japanese: "その人気の音楽は、有名なピアニストによって演奏されました。", correct: ["The popular music", "was", "played", "by", "a famous pianist", "."] },
-    { category: "受け身 規則動詞 2", japanese: "アメリカは1492年にコロンブスによって発見されました。", correct: ["America", "was", "discovered", "by Columbus", "in 1492", "."] },
-    { category: "受け身 規則動詞 2", japanese: "これらのお皿は夕食の後に洗われますか。", correct: ["Are", "these dishes", "washed", "after dinner", "?"] },
-    { category: "受け身 規則動詞 2", japanese: "そのサッカーの試合は、何百万人もの人々によって観られました。", correct: ["The soccer game", "was", "watched", "by", "millions of", "people", "."] },
+            // 現在進行形
+            { category: "現在進行形", japanese: "彼は今、公園で走っています。", correct: ["He", "is", "running", "in the park", "now", "."] },
+            { category: "現在進行形", japanese: "あなたは今、何をしていますか。", correct: ["What", "are", "you", "doing", "now", "?"] },
+            { category: "現在進行形", japanese: "私たちは今、英語を勉強していません。", correct: ["We", "are", "not", "studying", "English", "now", "."] },
 
-    // 受け身 不規則動詞 1
-    { category: "受け身 不規則動詞 1", japanese: "このケーキは母によって切られました。", correct: ["This cake", "was", "cut", "by", "my mother", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "その新しい動物はアフリカで見つけられました。", correct: ["The new animal", "was", "found", "in Africa", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "英語はグリーン先生によって教えられています。", correct: ["English", "is", "taught", "by", "Mr. Green", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "この家は10年前に建てられました。", correct: ["This house", "was", "built", "ten years ago", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "東京には多くの高い建物が建てられました。", correct: ["Many tall buildings", "were", "built", "in Tokyo", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "そのボールは、カイトによって捕球されました。", correct: ["The ball", "was", "caught", "by", "Kaito", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "昨日、一匹の大きな魚が彼によって捕まえられました。", correct: ["A big fish", "was", "caught", "by him", "yesterday", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "この本は多くの子供たちに読まれています。", correct: ["This book", "is", "read", "by", "many children", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "この漫画本は多くの10代の若者に読まれています。", correct: ["This comic book", "is", "read", "by", "many teenagers", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "あの店ではホットコーヒーが売られています。", correct: ["Hot coffee", "is", "sold", "at", "that store", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "たくさんの美しい花がそのお店で売られています。", correct: ["Many beautiful flowers", "are", "sold", "at", "the shop", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "一個の荷物が2日前に送られました。（発送されました）", correct: ["A package", "was", "sent", "two days ago", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "一通の英語のEメールが私に送られてきました。", correct: ["An English email", "was", "sent", "to me", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "現在、私の腕時計は壊れています。", correct: ["My watch", "is", "broken", "now", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "このコンピューターはいつ壊れたのですか。", correct: ["When", "was", "this computer", "broken", "?"] },
-    { category: "受け身 不規則動詞 1", japanese: "お米は多くの人々に食べられています。", correct: ["Rice", "is", "eaten", "by", "many people", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "その魚はトムの家族によって食べられました。", correct: ["The fish", "was", "eaten", "by", "Tom’s family", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "そのクッキーは私の兄弟に食べられてしまいました。", correct: ["The cookies", "were", "eaten", "by", "my brother", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "この腕時計は祖父から与えられました。（もらいました）", correct: ["This watch", "was", "given", "by", "my grandfather", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "彼は昨日、図書館で見かけられました。", correct: ["He", "was", "seen", "at", "the library", "yesterday", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "この歌は多くの人々に歌われています。", correct: ["This song", "is", "sung", "by", "many people", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "その歌はコンサートで歌われました。", correct: ["The song", "was", "sung", "at", "the concert", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "英語は多くの国々で話されています。", correct: ["English", "is", "spoken", "in", "many countries", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "中国語がその女性によって話されました。", correct: ["Chinese", "was", "spoken", "by", "the woman", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "京都でたくさんの美しい写真が撮られました。", correct: ["Many beautiful pictures", "were", "taken", "in", "Kyoto", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "その面白い物語はメアリーによって書かれました。", correct: ["The interesting story", "was", "written", "by", "Mary", "."] },
-    { category: "受け身 不規則動詞 1", japanese: "この手紙は英語で書かれています。", correct: ["This letter", "is", "written", "in", "English", "."] },
+            // 受け身 規則動詞 1
+            { category: "受け身 規則動詞 1", japanese: "この計画は昨日決定されました。", correct: ["This plan", "was", "decided", "yesterday", "."] },
+            { category: "受け身 規則動詞 1", japanese: "そのシャツは昨日洗われました。", correct: ["The shirt", "was", "washed", "yesterday", "."] },
+            { category: "受け身 規則動詞 1", japanese: "そのデータは何回もチェックされました。", correct: ["The data", "was", "checked", "many times", "."] },
+            { category: "受け身 規則動詞 1", japanese: "これらの物語はずっと前に作り出されました。", correct: ["These stories", "were", "created", "a long time ago", "."] },
+            { category: "受け身 規則動詞 1", japanese: "その公園は毎朝、掃除されています。", correct: ["The park", "is", "cleaned", "every morning", "."] },
+            { category: "受け身 規則動詞 1", japanese: "そのかわいい猫は、みんなに愛されています。", correct: ["The cute cat", "is", "loved", "by", "everyone", "."] },
+            { category: "受け身 規則動詞 1", japanese: "その試合は雨によって止められました。（中断しました）", correct: ["The game", "was", "stopped", "by", "the rain", "."] },
+            { category: "受け身 規則動詞 1", japanese: "そのアーチストは多くのファンに歓迎されました。", correct: ["The artist", "was", "welcomed", "by", "many fans", "."] },
+            { category: "受け身 規則動詞 1", japanese: "あの古いお寺は多くの観光客に訪問されています。", correct: ["That old temple", "is", "visited", "by", "many tourists", "."] },
+            { category: "受け身 規則動詞 1", japanese: "このコンピューターは何人かの生徒によって使われています。", correct: ["This computer", "is", "used", "by", "some students", "."] },
+            { category: "受け身 規則動詞 1", japanese: "このおいしいスープは私の父によって料理されました。", correct: ["This delicious soup", "was", "cooked", "by", "my father", "."] },
+            { category: "受け身 規則動詞 1", japanese: "日本の歴史は、多くの学生によって学ばれています。", correct: ["Japanese history", "is", "studied", "by", "many students", "."] },
+            { category: "受け身 規則動詞 1", japanese: "私たちの教室は毎日、私たちによって掃除されます。", correct: ["Our classroom", "is", "cleaned", "by us", "every day", "."] },
+            { category: "受け身 規則動詞 1", japanese: "そのゲートは5時に閉められました。", correct: ["The gate", "was", "closed", "at", "five o'clock", "."] },
 
-    // 受け身 不規則動詞 2
-    { category: "受け身 不規則動詞 2", japanese: "その歴史は授業で教えられました。", correct: ["The history", "was", "taught", "in", "the class", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "このお寺は100年前に建てられたのですか。", correct: ["Was", "this temple", "built", "100 years ago", "?"] },
-    { category: "受け身 不規則動詞 2", japanese: "この机は木で作られています。（木製です）", correct: ["This desk", "is", "made of", "wood", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "このジャケットは羊毛（ウール）で作られています。", correct: ["This jacket", "is", "made of", "wool", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "チーズは牛乳から作られます。", correct: ["Cheese", "is", "made from", "milk", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "ワインはブドウから作られます。", correct: ["Wine", "is", "made from", "grapes", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "その悲しい物語は私たちの授業で読まれました。", correct: ["The sad story", "was", "read", "in", "our class", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "それらのチケットは5分で売り切れました。", correct: ["Those tickets", "were", "sold out", "in", "five minutes", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "何本かの傘が雨の日に売れました。", correct: ["Some umbrellas", "were", "sold", "on rainy days", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "毎年、クリスマスカードが多くの友達に送られます。", correct: ["Christmas cards", "are", "sent to", "many friends", "every year", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "昨夜、窓が風によって割られました。（割れました）", correct: ["The window", "was", "broken", "by", "the wind", "last night", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "たくさんのリンゴが、一匹の野生の熊に食べられてしまいました。", correct: ["Many apples", "were", "eaten", "by", "a wild bear", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "昨日、私たちはたくさんの宿宿題を与えられました。", correct: ["We", "were", "given", "much homework", "yesterday", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "いくつかのアドバイスが生徒たちに与えられました。", correct: ["Some advice", "was", "given", "to", "the students", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "美しい山が窓から見えました。", correct: ["The beautiful mountain", "was", "seen", "from", "the window", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "富士山は世界中の人々に知られています。", correct: ["Mt. Fuji", "is", "known to", "people", "around the world", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "彼は有名な歌手として知られています。", correct: ["He", "is", "known as", "a famous singer", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "福岡その有名な神社で知られています。", correct: ["Fukuoka", "is", "known for", "the famous shrine", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "ハッピーバースデーは世界中で歌われています。", correct: ["Happy Birthday", "is", "sung", "around the world", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "式典で校歌が歌われました。", correct: ["The school song", "was", "sung", "at", "the ceremony", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "この国ではフランス語は話されていません。", correct: ["French", "is", "not", "spoken", "in", "this country", "."] },
-    { category: "受け身 不規則動詞 2", japanese: "フランス語はカナダで話されていますか。", correct: ["Is", "French", "spoken", "in", "Canada", "?"] },
+            // 受け身 規則動詞 2
+            { category: "受け身 規則動詞 2", japanese: "この場所は世界遺産に選ばれています。", correct: ["This place", "is", "selected", "as", "a World Heritage site", "."] },
+            { category: "受け身 規則動詞 2", japanese: "何人かのボランティアがお祭りのために必要とされています。", correct: ["Some volunteers", "are", "needed", "for", "the festival", "."] },
+            { category: "受け身 規則動詞 2", japanese: "多くの種類のパンがこの店で焼かれています。", correct: ["Many kinds of", "bread", "are", "baked", "at", "this store", "."] },
+            { category: "受け身 規則動詞 2", japanese: "この美しい花は、英語でサンフラワーと呼ばれています。", correct: ["This beautiful flower", "is", "called", "sunflower", "in English", "."] },
+            { category: "受け身 規則動詞 2", japanese: "あなたは学校で何と呼ばれていますか?", correct: ["What", "are", "you", "called", "at school", "?"] },
+            { category: "受け身 規則動詞 2", japanese: "彼は学校で何と呼ばれていますか?", correct: ["What", "is", "he", "called", "at school", "?"] },
+            { category: "受け身 規則動詞 2", japanese: "私はケンの誕生日パーティーに招待されました。", correct: ["I", "was", "invited", "to", "Ken's birthday party", "."] },
+            { category: "受け身 規則動詞 2", japanese: "その有名な絵は、若い芸術家によって描かれました。", correct: ["The famous picture", "was", "painted", "by", "a young artist", "."] },
+            { category: "受け身 規則動詞 2", japanese: "京都は世界中からやってくる多くの人々に訪れられています。", correct: ["Kyoto", "is", "visited", "by", "many people", "from", "all over the world", "."] },
+            { category: "受け身 規則動詞 2", japanese: "その小さな犬は川から救助されました。", correct: ["The little dog", "was", "saved", "from", "the river", "."] },
+            { category: "受け身 規則動詞 2", japanese: "重い箱が部屋の中に運び込まれました。", correct: ["Heavy boxes", "were", "carried", "into", "the room", "."] },
+            { category: "受け身 規則動詞 2", japanese: "その人気の音楽は、有名なピアニストによって演奏されました。", correct: ["The popular music", "was", "played", "by", "a famous pianist", "."] },
+            { category: "受け身 規則動詞 2", japanese: "アメリカは1492年にコロンブスによって発見されました。", correct: ["America", "was", "discovered", "by Columbus", "in 1492", "."] },
+            { category: "受け身 規則動詞 2", japanese: "これらのお皿は夕食の後に洗われますか。", correct: ["Are", "these dishes", "washed", "after dinner", "?"] },
+            { category: "受け身 規則動詞 2", japanese: "そのサッカーの試合は、何百万人もの人々によって観られました。", correct: ["The soccer game", "was", "watched", "by", "millions of", "people", "."] },
 
-    // 受け身 不規則動詞 3
-    { category: "受け身 不規則動詞 3", japanese: "その長い木は明日、切られる予定です。", correct: ["The tall tree", "will be", "cut", "tomorrow", "."] },
-    { category: "受け身 不規則動詞 3", japanese: "その部屋はきれいに保たれなければなりません。", correct: ["The room", "must be", "kept", "clean", "."] },
-    { category: "受け身 不規則動詞 3", japanese: "牛乳は冷蔵庫の中に保存されなければいけません。", correct: ["Milk", "must be", "kept", "in", "the refrigerator", "."] },
-    { category: "受け身 不規則動詞 3", japanese: "来年、新しい図書館が建てられる予定です。", correct: ["A new library", "will be", "built", "next year", "."] },
-    { category: "受け身 不規則動詞 3", japanese: "このメッセージは全員に送信される予定です。", correct: ["This message", "will be", "sent to", "everyone", "."] },
-    { category: "受け身 不規則動詞 3", japanese: "そのルールは破られてはいけません。", correct: ["The rules", "must not be", "broken", "."] },
-    { category: "受け身 不規則動詞 3", japanese: "今夜は多くの星が見られます。", correct: ["Many stars", "can be", "seen", "tonight", "."] },
-    { category: "受け身 不規則動詞 3", japanese: "この公園では野生のシカが見られます。", correct: ["Wild deer", "can be", "seen", "in", "this park", "."] },
-    { category: "受け身 不規則動詞 3", japanese: "このレポートは次の金曜日までに書かれなければいけません。", correct: ["This report", "must be", "written", "by", "next Friday", "."] },
-    // 現在進行形
-    { category: "現在進行形", japanese: "彼は今、公園で走っています。", correct: ["he", "is", "running", "in", "the", "park", "now", "."] },
-    { category: "現在進行形", japanese: "あなたは今、何をしていますか。", correct: ["what", "are", "you", "doing", "now", "?"] },
-    { category: "現在進行形", japanese: "私たちは今、英語を勉強していません。", correct: ["we", "aren't", "studying", "English", "now", "."] },
-    { category: "現在進行形", japanese: "トムとケンはテニスをしています。 ", correct: ["Tom", "and", "Ken", "are", "playing", "tennis", "."] },
-    { category: "現在進行形", japanese: "彼女は今、音楽を聞いていますか。", correct: ["is", "she", "listening", "to", "music", "now", "?"] }
-];
+            // 受け身 不規則動詞 1
+            { category: "受け身 不規則動詞 1", japanese: "このケーキは母によって切られました。", correct: ["This cake", "was", "cut", "by", "my mother", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "その新しい動物はアフリカで見つけられました。", correct: ["The new animal", "was", "found", "in Africa", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "英語はグリーン先生によって教えられています。", correct: ["English", "is", "taught", "by", "Mr. Green", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "この house は10年前に建てられました。", correct: ["This house", "was", "built", "ten years ago", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "東京には多くの高い建物が建てられました。", correct: ["Many tall buildings", "were", "built", "in Tokyo", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "そのボールは、カイトによって捕球されました。", correct: ["The ball", "was", "caught", "by", "Kaito", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "昨日、一匹の大きな魚が彼によって捕まえられました。", correct: ["A big fish", "was", "caught", "by him", "yesterday", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "この本は多くの子供たちに読まれています。", correct: ["This book", "is", "read", "by", "many children", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "この漫画本は多くの10代の若者に読まれています。", correct: ["This comic book", "is", "read", "by", "many teenagers", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "あの店ではホットコーヒーが売られています。", correct: ["Hot coffee", "is", "sold", "at", "that store", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "たくさんの美しい花がそのお店で売られています。", correct: ["Many beautiful flowers", "are", "sold", "at", "the shop", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "一個の荷物が2日前に送られました。（発送されました）", correct: ["A package", "was", "sent", "two days ago", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "一通の英語のEメールが私に送られてきました。", correct: ["An English email", "was", "sent", "to me", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "現在、私の腕時計は壊れています。", correct: ["My watch", "is", "broken", "now", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "このコンピューターはいつ壊れたのですか。", correct: ["When", "was", "this computer", "broken", "?"] },
+            { category: "受け身 不規則動詞 1", japanese: "お米は多くの人々に食べられています。", correct: ["Rice", "is", "eaten", "by", "many people", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "その魚はトムの家族によって食べられました。", correct: ["The fish", "was", "eaten", "by", "Tom’s family", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "そのクッキーは私の兄弟に食べられてしまいました。", correct: ["The cookies", "were", "eaten", "by", "my brother", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "この腕時計は祖父から与えられました。（もらいました）", correct: ["This watch", "was", "given", "by", "my grandfather", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "彼は昨日、図書館で見かけられました。", correct: ["He", "was", "seen", "at", "the library", "yesterday", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "この歌は多くの人々に歌われています。", correct: ["This song", "is", "sung", "by", "many people", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "その歌はコンサートで歌われました。", correct: ["The song", "was", "sung", "at", "the concert", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "英語は多くの国々で話されています。", correct: ["English", "is", "spoken", "in", "many countries", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "中国語がその女性によって話されました。", correct: ["Chinese", "was", "spoken", "by", "the woman", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "京都でたくさんの美しい写真が撮られました。", correct: ["Many beautiful pictures", "were", "taken", "in", "Kyoto", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "その面白い物語はメアリーによって書かれました。", correct: ["The interesting story", "was", "written", "by", "Mary", "."] },
+            { category: "受け身 不規則動詞 1", japanese: "この手紙は英語で書かれています。", correct: ["This letter", "is", "written", "in", "English", "."] },
 
-let currentQuestions = [];
-let currentQuestionIndex = 0;
-let score = 0;
-let selectedWords = [];
-let remainingWords = [];
+            // 受け身 不規則動詞 2
+            { category: "受け身 不規則動詞 2", japanese: "その歴史は授業で教えられました。", correct: ["The history", "was", "taught", "in", "the class", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "このお寺は100年前に建てられたのですか。", correct: ["Was", "this temple", "built", "100 years ago", "?"] },
+            { category: "受け身 不規則動詞 2", japanese: "この机は木で作られています。（木製です）", correct: ["This desk", "is", "made of", "wood", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "このジャケットは羊毛（ウール）で作られています。", correct: ["This jacket", "is", "made of", "wool", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "チーズは牛乳から作られます。", correct: ["Cheese", "is", "made from", "milk", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "ワインはブドウから作られます。", correct: ["Wine", "is", "made from", "grapes", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "その悲しい物語は私たちの授業で読まれました。", correct: ["The sad story", "was", "read", "in", "our class", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "それらのチケットは5分で売り切れました。", correct: ["Those tickets", "were", "sold out", "in", "five minutes", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "何本かの傘が雨の日に売れました。", correct: ["Some umbrellas", "were", "sold", "on rainy days", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "毎年、クリスマスカードが多くの友達に送られます。", correct: ["Christmas cards", "are", "sent to", "many friends", "every year", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "昨夜、窓が風によって割られました。（割れました）", correct: ["The window", "was", "broken", "by", "the wind", "last night", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "たくさんのリンゴが、一匹の野生の熊に食べられてしまいました。", correct: ["Many apples", "were", "eaten", "by", "a wild bear", "." ] },
+            { category: "受け身 不規則動詞 2", japanese: "昨日、私たちはたくさんの宿題を与えられました。", correct: ["We", "were", "given", "much homework", "yesterday", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "いくつかのアドバイスが生徒たちに与えられました。", correct: ["Some advice", "was", "given", "to", "the students", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "美しい山が窓から見えました。", correct: ["The beautiful mountain", "was", "seen", "from", "the window", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "富士山は世界中の人々に知られています。", correct: ["Mt. Fuji", "is", "known to", "people", "around the world", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "彼は有名な歌手として知られています。", correct: ["He", "is", "known as", "a famous singer", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "福岡はその有名な神社で知られています。", correct: ["Fukuoka", "is", "known for", "the famous shrine", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "ハッピーバースデーは世界中で歌われています。", correct: ["Happy Birthday", "is", "sung", "around the world", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "式典で校歌が歌われました。", correct: ["The school song", "was", "sung", "at", "the ceremony", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "この国ではフランス語は話されていません。", correct: ["French", "is", "not", "spoken", "in", "this country", "."] },
+            { category: "受け身 不規則動詞 2", japanese: "フランス語はカナダで話されていますか。", correct: ["Is", "French", "spoken", "in", "Canada", "?"] },
 
-function shuffle(array) {
-    const clone = [...array];
-    for (let i = clone.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [clone[i], clone[j]] = [clone[j], clone[i]];
-    }
-    return clone;
-}
+            // 受け身 不規則動詞 3
+            { category: "受け身 不規則動詞 3", japanese: "その長い木は明日、切られる予定です。", correct: ["The tall tree", "will be", "cut", "tomorrow", "."] },
+            { category: "受け身 不規則動詞 3", japanese: "その部屋はきれいに保たれなければなりません。", correct: ["The room", "must be", "kept", "clean", "."] },
+            { category: "受け身 不規則動詞 3", japanese: "牛乳は冷蔵庫の中に保存されなければいけません。", correct: ["Milk", "must be", "kept", "in", "the refrigerator", "."] },
+            { category: "受け身 不規則動詞 3", japanese: "来年、新しい図書館が建てられる予定です。", correct: ["A new library", "will be", "built", "next year", "."] },
+            { category: "受け身 不規則動詞 3", japanese: "このメッセージは全員に送信される予定です。", correct: ["This message", "will be", "sent to", "everyone", "."] },
+            { category: "受け身 不規則動詞 3", japanese: "そのルールは破られてはいけません。", correct: ["The rules", "must not be", "broken", "."] },
+            { category: "受け身 不規則動詞 3", japanese: "今夜は多くの星が見られます。", correct: ["Many stars", "can be", "seen", "tonight", "."] },
+            { category: "受け身 不規則動詞 3", japanese: "この公園では野生のシカが見られます。", correct: ["Wild deer", "can be", "seen", "in", "this park", "."] },
+            { category: "受け身 不規則動詞 3", japanese: "このレポートは次の金曜日までに書かれなければいけません。", correct: ["This report", "must be", "written", "by", "next Friday", "."] }
+        ];
 
-function startQuiz(mode) {
-    if (mode === 'ミックス') {
-        currentQuestions = shuffle(quizData);
-    } else {
-        currentQuestions = shuffle(quizData.filter(q => q.category === mode));
-    }
-    
-    currentQuestions = currentQuestions.slice(0, 10);
-    currentQuestionIndex = 0;
-    score = 0;
-    
-    document.getElementById("mode-screen").classList.remove("active");
-    document.getElementById("quiz-screen").classList.add("active");
-    document.getElementById("total-q-num").textContent = currentQuestions.length;
-    
-    loadQuestion();
-}
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedWords = [];
+        let poolWords = [];
+        let reviewData = [];
+        let currentMode = "";
 
-function loadQuestion() {
-    const q = currentQuestions[currentQuestionIndex];
-    document.getElementById("current-q-num").textContent = currentQuestionIndex + 1;
-    document.getElementById("japanese-question").textContent = `[${q.category}] ${q.japanese}`;
-    document.getElementById("feedback").textContent = "";
-    document.getElementById("submit-btn").disabled = false;
-    
-    selectedWords = [];
-    remainingWords = shuffle(q.correct);
-    
-    renderChips();
-}
-
-function renderChips() {
-    const answerArea = document.getElementById("answer-area");
-    const optionsArea = document.getElementById("options-area");
-    
-    answerArea.innerHTML = "";
-    optionsArea.innerHTML = "";
-    
-    selectedWords.forEach((word, index) => {
-        const chip = document.createElement("div");
-        chip.className = "word-chip";
-        chip.textContent = word;
-        
-        // 1番目の単語、かつ、すでに大文字（Tomなど）で始まっていない場合のみ、CSSで自動大文字化
-        if (index === 0 && isLetter(word) && !isAlreadyCapitalized(word)) {
-            chip.classList.add("capitalize");
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
-        
-        chip.onclick = () => {
-            selectedWords.splice(index, 1);
-            remainingWords.push(word);
-            renderChips();
-        };
-        answerArea.appendChild(chip);
-    });
-    
-    remainingWords.forEach((word, index) => {
-        const chip = document.createElement("div");
-        chip.className = "word-chip";
-        chip.textContent = word;
-        chip.onclick = () => {
-            remainingWords.splice(index, 1);
-            selectedWords.push(word);
-            renderChips();
-        };
-        optionsArea.appendChild(chip);
-    });
-}
 
-function isLetter(str) {
-    return str.length > 0 && str[0].match(/[a-zA-Z]/);
-}
+        function startQuiz(mode) {
+            currentMode = mode;
+            reviewData = [];
+            
+            if (mode === 'ミックス') {
+                currentQuestions = [...quizData];
+            } else {
+                currentQuestions = quizData.filter(q => q.category === mode);
+            }
 
-// すでに大文字で始まっているか判定する関数
-function isAlreadyCapitalized(str) {
-    return str.length > 0 && str[0] === str[0].toUpperCase();
-}
+            shuffleArray(currentQuestions);
+            if (currentQuestions.length > 10) {
+                currentQuestions = currentQuestions.slice(0, 10);
+            }
 
-function resetCurrentQuestion() {
-    const q = currentQuestions[currentQuestionIndex];
-    selectedWords = [];
-    remainingWords = shuffle(q.correct);
-    document.getElementById("feedback").textContent = "";
-    renderChips();
-}
+            if (currentQuestions.length === 0) {
+                alert("該当する問題が見つかりませんでした。");
+                return;
+            }
 
-function checkAnswer() {
-    const q = currentQuestions[currentQuestionIndex];
-    const feedback = document.getElementById("feedback");
-    
-    if (remainingWords.length > 0) {
-        feedback.className = "feedback incorrect";
-        feedback.textContent = "すべての単語を並べ替えてください。";
-        return;
-    }
-    
-    let isCorrect = true;
-    for(let i = 0; i < q.correct.length; i++) {
-        if(selectedWords[i].toLowerCase() !== q.correct[i].toLowerCase()) {
-            isCorrect = false;
-            break;
-        }
-    }
-    
-    document.getElementById("submit-btn").disabled = true;
-    
-    if (isCorrect) {
-        feedback.className = "feedback correct";
-        feedback.textContent = "正解 ⭕️";
-        score++;
-    } else {
-        feedback.className = "feedback incorrect";
-        // 模範解答の作成（文頭のみ自動大文字化）
-        const displayCorrect = [...q.correct];
-        if(isLetter(displayCorrect[0]) && !isAlreadyCapitalized(displayCorrect[0])) {
-            displayCorrect[0] = displayCorrect[0].charAt(0).toUpperCase() + displayCorrect[0].slice(1);
-        }
-        feedback.textContent = `不正解 ❌ 【正解】${displayCorrect.join(" ").replace(/\s+(\.|\?)/g, "$1")}`;
-    }
-    
-    setTimeout(() => {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < currentQuestions.length) {
+            currentQuestionIndex = 0;
+            score = 0;
+
+            document.getElementById('menu-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'block';
+            
+            document.getElementById('current-mode-title').innerText = mode;
+
             loadQuestion();
-        } else {
-            showResult();
         }
-    }, 2000);
-}
 
-function showResult() {
-    document.getElementById("quiz-screen").classList.remove("active");
-    document.getElementById("result-screen").classList.add("active");
-    document.getElementById("score-text").textContent = `${currentQuestions.length}問中 ${score}問 正解でした！`;
-}
+        function loadQuestion() {
+            selectedWords = [];
+            const currentQ = currentQuestions[currentQuestionIndex];
+            
+            document.getElementById('status-text').innerText = `問題: ${currentQuestionIndex + 1} / ${currentQuestions.length}`;
+            document.getElementById('japanese-text').innerText = (currentMode === 'ミックス') ? `[${currentQ.category}] ${currentQ.japanese}` : currentQ.japanese;
 
-function toModeScreen() {
-    document.getElementById("result-screen").classList.remove("active");
-    document.getElementById("mode-screen").classList.add("active");
-}
-</script>
+            poolWords = [...currentQ.correct];
+            shuffleArray(poolWords);
+
+            renderZones();
+        }
+
+        function renderZones() {
+            const answerZone = document.getElementById('answer-zone');
+            answerZone.innerHTML = '';
+            selectedWords.forEach((word, index) => {
+                const wordBtn = document.createElement('span');
+                wordBtn.className = 'word';
+                wordBtn.innerText = word;
+                wordBtn.onclick = () => removeWord(index);
+                answerZone.appendChild(wordBtn);
+            });
+
+            const wordZone = document.getElementById('word-zone');
+            wordZone.innerHTML = '';
+            poolWords.forEach((word, index) => {
+                const wordBtn = document.createElement('span');
+                wordBtn.className = 'word';
+                wordBtn.innerText = word;
+                wordBtn.onclick = () => pickWord(index);
+                wordZone.appendChild(wordBtn);
+            });
+        }
+
+        function pickWord(index) {
+            selectedWords.push(poolWords[index]);
+            poolWords.splice(index, 1);
+            renderZones();
+        }
+
+        function removeWord(index) {
+            poolWords.push(selectedWords[index]);
+            selectedWords.splice(index, 1);
+            renderZones();
+        }
+
+        function resetCurrentQuestion() {
+            loadQuestion();
+        }
+
+        function submitAnswer() {
+            const currentQ = currentQuestions[currentQuestionIndex];
+            const userAnsStr = selectedWords.join(' ');
+            const correctAnsStr = currentQ.correct.join(' ');
+
+            const isCorrect = (userAnsStr === correctAnsStr);
+            if (isCorrect) score++;
+
+            reviewData.push({
+                japanese: currentQ.japanese,
+                correct: correctAnsStr,
+                user: userAnsStr || "(空欄)",
+                correctFlag: isCorrect
+            });
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+
+            document.getElementById('score-display').innerText = `${score} / ${currentQuestions.length}`;
+            
+            const comment = document.getElementById('result-comment');
+            const percent = (score / currentQuestions.length) * 100;
+            if (percent === 100) comment.innerText = "素晴らしい！満点です！🎉";
+            else if (percent >= 80) comment.innerText = "お見事！あともう少しです！👍";
+            else if (percent >= 50) comment.innerText = "ナイスファイト！復習してもう一度挑戦しよう！";
+            else comment.innerText = "一歩ずつ進みましょう！次はもっと取れるはずです！";
+
+            const reviewZone = document.getElementById('review-zone');
+            reviewZone.innerHTML = '';
+            reviewData.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'review-item';
+                div.innerHTML = `
+                    <div class="review-q">${idx + 1}. ${item.japanese} ${item.correctFlag ? '✅' : '❌'}</div>
+                    <div class="review-a">正解: ${item.correct}</div>
+                    ${!item.correctFlag ? `<div class="review-w">解答: ${item.user}</div>` : ''}
+                `;
+                reviewZone.appendChild(div);
+            });
+        }
+
+        function backToMenu() {
+            document.getElementById('result-screen').style.display = 'none';
+            document.getElementById('menu-screen').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
