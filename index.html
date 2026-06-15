@@ -112,6 +112,12 @@
         .word:active {
             background-color: #d6dbdf;
         }
+        
+        /* 【重要】解答エリアの最初の単語だけ、見た目上1文字目を大文字にする魔法のCSS */
+        .answer-area .word:first-child::first-letter {
+            text-transform: uppercase;
+        }
+
         .control-btns {
             display: flex;
             gap: 15px;
@@ -240,11 +246,11 @@
             { category: "現在完了形", japanese: "あなたは今までカナダに行ったことがありますか。", correct: ["Have", "you", "ever", "been", "to Canada", "?"] },
 
             // 現在進行形
-{ category: "現在進行形", japanese: "彼は今、公園で走っています。", correct: ["he", "is", "running", "in the park", "now", "."] },
-{ category: "現在進行形", japanese: "あなたは今、何をしていますか。", correct: ["what", "are", "you", "doing", "now", "?"] },
-{ category: "現在進行形", japanese: "私たちは今、英語を勉強していません。", correct: ["we", "are", "not", "studying", "English", "now", "."] },
-{ category: "現在進行形", japanese: "トムとケンはテニスをしています。 ", correct: ["Tom", "and", "Ken", "are", "playing", "tennis", "."] }, 
-{ category: "現在進行形", japanese: "彼女は今、音楽を聞いていますか。", correct: ["is", "she", "listening", "to", "music", "now", "?"] },
+            { category: "現在進行形", japanese: "彼は今、公園で走っています。", correct: ["He", "is", "running", "in the park", "now", "."] },
+            { category: "現在進行形", japanese: "あなたは今、何をしていますか。", correct: ["What", "are", "you", "doing", "now", "?"] },
+            { category: "現在進行形", japanese: "私たちは今、英語を勉強していません。", correct: ["We", "are", "not", "studying", "English", "now", "."] },
+            { category: "現在進行形", japanese: "トムとケンはテニスをしています。", correct: ["Tom", "and", "Ken", "are", "playing", "tennis", "."] }, 
+            { category: "現在進行形", japanese: "彼女は今、音楽を聞いていますか。", correct: ["Is", "she", "listening", "to", "music", "now", "?"] },
 
             // 受け身 規則動詞 1
             { category: "受け身 規則動詞 1", japanese: "この計画は昨日決定されました。", correct: ["This plan", "was", "decided", "yesterday", "."] },
@@ -316,7 +322,7 @@
             { category: "受け身 不規則動詞 2", japanese: "チーズは牛乳から作られます。", correct: ["Cheese", "is", "made from", "milk", "."] },
             { category: "受け身 不規則動詞 2", japanese: "ワインはブドウから作られます。", correct: ["Wine", "is", "made from", "grapes", "."] },
             { category: "受け身 不規則動詞 2", japanese: "その悲しい物語は私たちの授業で読まれました。", correct: ["The sad story", "was", "read", "in", "our class", "."] },
-            { category: "受け身 不規則動詞 2", japanese: "それらのチケットは5分で売り切れました。", correct: ["Those tickets", "were", "sold out", "in", "five minutes", "."] },
+            { category: "受け身 不規則動詞 2", milestone: "fix", japanese: "それらのチケットは5分で売り切れました。", correct: ["Those tickets", "were", "sold out", "in", "five minutes", "."] },
             { category: "受け身 不規則動詞 2", japanese: "何本かの傘が雨の日に売れました。", correct: ["Some umbrellas", "were", "sold", "on rainy days", "."] },
             { category: "受け身 不規則動詞 2", japanese: "毎年、クリスマスカードが多くの友達に送られます。", correct: ["Christmas cards", "are", "sent to", "many friends", "every year", "."] },
             { category: "受け身 不規則動詞 2", japanese: "昨夜、窓が風によって割られました。（割れました）", correct: ["The window", "was", "broken", "by", "the wind", "last night", "."] },
@@ -351,6 +357,16 @@
         let poolWords = [];
         let reviewData = [];
         let currentMode = "";
+
+        // 固有名詞と特定単語のチェック用関数
+        function isProperNoun(word) {
+            const properNouns = [
+                "Tokyo", "Hokkaido", "Africa", "Tom", "Ken", "Yumi", 
+                "Mary", "Kaito", "Mr. Green", "Columbus", "Fukuoka", 
+                "Mt. Fuji", "I", "Japanese", "French", "Canada", "English"
+            ];
+            return properNouns.includes(word);
+        }
 
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -406,22 +422,38 @@
         }
 
         function renderZones() {
+            // 1. 解答エリアの描画
             const answerZone = document.getElementById('answer-zone');
             answerZone.innerHTML = '';
             selectedWords.forEach((word, index) => {
                 const wordBtn = document.createElement('span');
                 wordBtn.className = 'word';
-                wordBtn.innerText = word;
+                
+                // 表示上はプール内と同じルールを適用（CSSの魔法で先頭だけ大文字化するため、データは小文字ベースにしておく）
+                if (!isProperNoun(word)) {
+                    wordBtn.innerText = word.charAt(0).toLowerCase() + word.slice(1);
+                } else {
+                    wordBtn.innerText = word;
+                }
+                
                 wordBtn.onclick = () => removeWord(index);
                 answerZone.appendChild(wordBtn);
             });
 
+            // 2. 選択肢プールの描画
             const wordZone = document.getElementById('word-zone');
             wordZone.innerHTML = '';
             poolWords.forEach((word, index) => {
                 const wordBtn = document.createElement('span');
                 wordBtn.className = 'word';
-                wordBtn.innerText = word;
+                
+                // 固有名詞や「I」以外はすべて小文字スタートでプールに並べる
+                if (!isProperNoun(word)) {
+                    wordBtn.innerText = word.charAt(0).toLowerCase() + word.slice(1);
+                } else {
+                    wordBtn.innerText = word;
+                }
+
                 wordBtn.onclick = () => pickWord(index);
                 wordZone.appendChild(wordBtn);
             });
