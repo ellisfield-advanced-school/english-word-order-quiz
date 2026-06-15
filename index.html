@@ -111,6 +111,114 @@
         <h1>語句整序テスト</h1>
         <button class="btn" onclick="startQuiz('現在完了形')">現在完了形</button>
         <button class="btn" onclick="startQuiz('現在進行形')">現在進行形</button>
+        // =================================================================
+// 【エリスフィールド進学会 専用】受け身 5単元一括追加ブロック
+// =================================================================
+    `</div>
+    <script>
+    // 💡仕組みの調整：ボタンエリアの直後にデータを滑り込ませるため、一度HTMLを閉じてからデータを定義します
+
+    const extraArray = [
+        // 受け身 規則動詞 1
+        { category: "受け身 規則動詞 1", japanese: "この計画は昨日決定されました。", correct: ["This plan", "was", "decided", "yesterday", "."] },
+        { category: "受け身 規則動詞 1", japanese: "そのシャツは昨日洗われました。", correct: ["The shirt", "was", "washed", "yesterday", "."] },
+        { category: "受け身 規則動詞 1", japanese: "そのデータは何回もチェックされました。", correct: ["The data", "was", "checked", "many times", "."] },
+        { category: "受け身 規則動詞 1", japanese: "これらの物語はずっと前に作り出されました。", correct: ["These stories", "were", "created", "a long time ago", "."] },
+        { category: "受け身 規則動詞 1", japanese: "その公園は毎朝、掃除されています。", correct: ["The park", "is", "cleaned", "every morning", "."] },
+        { category: "受け身 規則動詞 1", japanese: "そのかわいい猫は、みんなに愛されています。", correct: ["The cute cat", "is", "loved", "by", "everyone", "."] },
+        { category: "受け身 規則動詞 1", japanese: "その試合は雨によって止められました。（中断しました）", correct: ["The game", "was", "stopped", "by", "the rain", "."] },
+        { category: "受け身 規則動詞 1", japanese: "そのアーチストは多くのファンに歓迎されました。", correct: ["The artist", "was", "welcomed", "by", "many fans", "."] },
+        { category: "受け身 規則動詞 1", japanese: "あの古いお寺は多くの観光客に訪問されています。", correct: ["That old temple", "is", "visited", "by", "many tourists", "."] },
+        { category: "受け身 規則動詞 1", japanese: "このコンピューターは何人かの生徒によって使われています。", correct: ["This computer", "is", "used", "by", "some students", "."] },
+        { category: "受け身 規則動詞 1", japanese: "このおいしいスープは私の父によって料理されました。", correct: ["This delicious soup", "was", "cooked", "by", "my father", "."] },
+        { category: "受け身 規則動詞 1", japanese: "日本の歴史は、多くの学生によって学ばれています。", correct: ["Japanese history", "is", "studied", "by", "many students", "."] },
+        { category: "受け身 規則動詞 1", japanese: "私たちの教室は毎日、私たちによって掃除されます。", correct: ["Our classroom", "is", "cleaned", "by us", "every day", "."] },
+        { category: "受け身 規則動詞 1", japanese: "そのゲートは5時に閉められました。", correct: ["The gate", "was", "closed", "at", "five o'clock", "."] },
+
+        // 受け身 規則動詞 2
+        { category: "受け身 規則動詞 2", japanese: "この場所は世界遺産に選ばれています。", correct: ["This place", "is", "selected", "as", "a World Heritage site", "."] },
+        { category: "受け身 規則動詞 2", japanese: "何人かのボランティアがお祭りのために必要とされています。", correct: ["Some volunteers", "are", "needed", "for", "the festival", "."] },
+        { category: "受け身 規則動詞 2", japanese: "多くの種類のパンがこの店で焼かれています。", correct: ["Many kinds of", "bread", "are", "baked", "at", "this store", "."] },
+        { category: "受け身 規則動詞 2", japanese: "この美しい花は、英語でサンフラワーと呼ばれています。", correct: ["This beautiful flower", "is", "called", "sunflower", "in English", "."] },
+        { category: "受け身 規則動詞 2", japanese: "あなたは学校で何と呼ばれていますか?", correct: ["What", "are", "you", "called", "at school", "?"] },
+        { category: "受け身 規則動詞 2", japanese: "彼は学校で何と呼ばれていますか?", correct: ["What", "is", "he", "called", "at school", "?"] },
+        { category: "受け身 規則動詞 2", japanese: "私はケンの誕生日パーティーに招待されました。", correct: ["I", "was", "invited", "to", "Ken's birthday party", "."] },
+        { category: "受け身 規則動詞 2", japanese: "その有名な絵は、若い芸術家によって描かれました。", correct: ["The famous picture", "was", "painted", "by", "a young artist", "."] },
+        { category: "受け身 規則動詞 2", japanese: "京都は世界中からやってくる多くの人々に訪れられています。", correct: ["Kyoto", "is", "visited", "by", "many people", "from", "all over the world", "."] },
+        { category: "受け身 規則動詞 2", japanese: "その小さな犬は川から救助されました。", correct: ["The little dog", "was", "saved", "from", "the river", "."] },
+        { category: "受け身 規則動詞 2", japanese: "重い箱が部屋の中に運び込まれました。", correct: ["Heavy boxes", "were", "carried", "into", "the room", "."] },
+        { category: "受け身 規則動詞 2", japanese: "その人気の音楽は、有名なピアニストによって演奏されました。", correct: ["The popular music", "was", "played", "by", "a famous pianist", "."] },
+        { category: "受け身 規則動詞 2", japanese: "アメリカは1492年にコロンブスによって発見されました。", correct: ["America", "was", "discovered", "by Columbus", "in 1492", "."] },
+        { category: "受け身 規則動詞 2", japanese: "これらのお皿は夕食の後に洗われますか。", correct: ["Are", "these dishes", "washed", "after dinner", "?"] },
+        { category: "受け身 規則動詞 2", japanese: "そのサッカーの試合は、何百万人もの人々によって観られました。", correct: ["The soccer game", "was", "watched", "by", "millions of", "people", "."] },
+
+        // 受け身 不規則動詞 1
+        { category: "受け身 不規則動詞 1", japanese: "このケーキは母によって切られました。", correct: ["This cake", "was", "cut", "by", "my mother", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "その新しい動物はアフリカで見つけられました。", correct: ["The new animal", "was", "found", "in Africa", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "英語はグリーン先生によって教えられています。", correct: ["English", "is", "taught", "by", "Mr. Green", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "この家は10年前に建てられました。", correct: ["This house", "was", "built", "ten years ago", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "東京には多くの高い建物が建てられました。", correct: ["Many tall buildings", "were", "built", "in Tokyo", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "そのボールは、カイトによって捕球されました。", correct: ["The ball", "was", "caught", "by", "Kaito", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "昨日、一匹の大きな魚が彼によって捕まえられました。", correct: ["A big fish", "was", "caught", "by him", "yesterday", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "この本は多くの子供たちに読まれています。", correct: ["This book", "is", "read", "by", "many children", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "この漫画本は多くの10代の若者に読まれています。", correct: ["This comic book", "is", "read", "by", "many teenagers", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "あの店ではホットコーヒーが売られています。", correct: ["Hot coffee", "is", "sold", "at", "that store", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "たくさんの美しい花がそのお店で売られています。", correct: ["Many beautiful flowers", "are", "sold", "at", "the shop", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "一個の荷物が2日前に送られました。（発送されました）", correct: ["A package", "was", "sent", "two days ago", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "一通の英語のEメールが私に送られてきました。", correct: ["An English email", "was", "sent", "to me", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "現在、私の腕時計は壊れています。", correct: ["My watch", "is", "broken", "now", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "このコンピューターはいつ壊れたのですか。", correct: ["When", "was", "this computer", "broken", "?"] },
+        { category: "受け身 不規則動詞 1", japanese: "お米は多くの人々に食べられています。", correct: ["Rice", "is", "eaten", "by", "many people", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "その魚はトムの家族によって食べられました。", correct: ["The fish", "was", "eaten", "by", "Tom’s family", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "そのクッキーは私の兄弟に食べられてしまいました。", correct: ["The cookies", "were", "eaten", "by", "my brother", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "この腕時計は祖父から与えられました。（もらいました）", correct: ["This watch", "was", "given", "by", "my grandfather", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "彼は昨日、図書館で見かけられました。", correct: ["He", "was", "seen", "at", "the library", "yesterday", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "この歌は多くの人々に歌われています。", correct: ["This song", "is", "sung", "by", "many people", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "その歌はコンサートで歌われました。", correct: ["The song", "was", "sung", "at", "the concert", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "英語は多くの国々で話されています。", correct: ["English", "is", "spoken", "in", "many countries", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "中国語がその女性によって話されました。", correct: ["Chinese", "was", "spoken", "by", "the woman", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "京都でたくさんの美しい写真が撮られました。", correct: ["Many beautiful pictures", "were", "taken", "in", "Kyoto", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "その面白い物語はメアリーによって書かれました。", correct: ["The interesting story", "was", "written", "by", "Mary", "."] },
+        { category: "受け身 不規則動詞 1", japanese: "この手紙は英語で書かれています。", correct: ["This letter", "is", "written", "in", "English", "."] },
+
+        // 受け身 不規則動詞 2
+        { category: "受け身 不規則動詞 2", japanese: "その歴史は授業で教えられました。", correct: ["The history", "was", "taught", "in", "the class", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "このお寺は100年前に建てられたのですか。", correct: ["Was", "this temple", "built", "100 years ago", "?"] },
+        { category: "受け身 不規則動詞 2", japanese: "この机は木で作られています。（木製です）", correct: ["This desk", "is", "made of", "wood", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "このジャケットは羊毛（ウール）で作られています。", correct: ["This jacket", "is", "made of", "wool", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "チーズは牛乳から作られます。", correct: ["Cheese", "is", "made from", "milk", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "ワインはブドウから作られます。", correct: ["Wine", "is", "made from", "grapes", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "その悲しい物語は私たちの授業で読まれました。", correct: ["The sad story", "was", "read", "in", "our class", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "それらのチケットは5分で売り切れました。", correct: ["Those tickets", "were", "sold out", "in", "five minutes", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "何本かの傘が雨の日に売れました。", correct: ["Some umbrellas", "were", "sold", "on rainy days", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "毎年、クリスマスカードが多くの友達に送られます。", correct: ["Christmas cards", "are", "sent to", "many friends", "every year", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "昨夜、窓が風によって割られました。（割れました）", correct: ["The window", "was", "broken", "by", "the wind", "last night", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "たくさんのリンゴが、一匹の野生の熊に食べられてしまいました。", correct: ["Many apples", "were", "eaten", "by", "a wild bear", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "昨日、私たちはたくさんの宿題を与えられました。", correct: ["We", "were", "given", "much homework", "yesterday", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "いくつかのアドバイスが生徒たちに与えられました。", correct: ["Some advice", "was", "given", "to", "the students", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "美しい山が窓から見えました。", correct: ["The beautiful mountain", "was", "seen", "from", "the window", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "富士山は世界中の人々に知られています。", correct: ["Mt. Fuji", "is", "known to", "people", "around the world", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "彼は有名な歌手として知られています。", correct: ["He", "is", "known as", "a famous singer", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "福岡その有名な神社で知られています。", correct: ["Fukuoka", "is", "known for", "the famous shrine", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "ハッピーバースデーは世界中で歌われています。", correct: ["Happy Birthday", "is", "sung", "around the world", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "式典で校歌が歌われました。", correct: ["The school song", "was", "sung", "at", "the ceremony", "."] },
+        { category: "受け身 不規則動詞 2", japanese: "この国ではフランス語は話されていません。", correct: ["French", "is", "not", "spoken", "in", "this country", "."] },
+        { category: "受け do: "受け身 不規則動詞 2", japanese: "フランス語はカナダで話されていますか。", correct: ["Is", "French", "spoken", "in", "Canada", "?"] },
+
+        // 受け身 不規則動詞 3
+        { category: "受け身 不規則動詞 3", japanese: "その長い木は明日、切られる予定です。", correct: ["The tall tree", "will be", "cut", "tomorrow", "."] },
+        { category: "受け身 不規則動詞 3", japanese: "その部屋はきれいに保たれなければなりません。", correct: ["The room", "must be", "kept", "clean", "."] },
+        { category: "受け身 不規則動詞 3", japanese: "牛乳は冷蔵庫の中に保存されなければいけません。", correct: ["Milk", "must be", "kept", "in", "the refrigerator", "."] },
+        { category: "受け身 不規則動詞 3", japanese: "来年、新しい図書館が建てられる予定です。", correct: ["A new library", "will be", "built", "next year", "."] },
+        { category: "受け身 不規則動詞 3", japanese: "このメッセージは全員に送信される予定です。", correct: ["This message", "will be", "sent to", "everyone", "."] },
+        { category: "受け身 不規則動詞 3", japanese: "そのルールは破られてはいけません。", correct: ["The rules", "must not be", "broken", "."] },
+        { category: "受け身 不規則動詞 3", japanese: "今夜は多くの星が見られます。", correct: ["Many stars", "can be", "seen", "tonight", "."] },
+        { category: "受け身 不規則動詞 3", japanese: "この公園では野生のシカが見られます。", correct: ["Wild deer", "can be", "seen", "in", "this park", "."] },
+        { category: "受け身 不規則動詞 3", japanese: "このレポートは次の金曜日までに書かれなければいけません。", correct: ["This report", "must be", "written", "by", "next Friday", "."] }
+    ];
+    setTimeout(() => { if(typeof quizData !== 'undefined') quizData.push(...extraArray); }, 10);
+    </script>
+    <div style="display:none">
         <button class="btn btn-secondary" onclick="startQuiz('ミックス')">単元ミックスモード</button>
     </div>
 
